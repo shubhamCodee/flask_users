@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask User Manager</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        charcoal: '#121212',   /* Background */
+                        primary: '#E0E0E0',    /* Main Text */
+                        secondary: '#B0B0B0',  /* Sub Text */
+                        darkgray: '#444444',   /* Borders/Dividers */
+                        softgray: '#888888',   /* Accent */
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { min-height: 100vh; }
+    </style>
+</head>
+<body class="bg-charcoal text-primary font-sans antialiased p-8 flex justify-center">
+
+    <div class="w-full max-w-2xl">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="mb-8">
+                    {% for category, message in messages %}
+                        
+                        <div class="p-4 rounded border mb-2 
+                            {% if category == 'error' %}
+                                bg-red-900/20 border-red-800 text-red-200
+                            {% else %}
+                                bg-green-900/20 border-green-800 text-green-200
+                            {% endif %}
+                        ">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        
+        {% block content %}
+        {% endblock %}
+
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,61 @@
+/* static/style.css */
+
+/* 1. The Base Canvas */
+body {
+    background-color: #121212; /* Charcoal Black */
+    color: #E0E0E0;            /* Primary Text */
+    font-family: sans-serif;   /* Makes it readable */
+    margin: 2rem;              /* Adds breathing room */
+}
+
+/* 2. Headings */
+h1, h2 {
+    color: #E0E0E0;
+    border-bottom: 1px solid #444444; /* Divider color */
+    padding-bottom: 10px;
+}
+
+/* 3. Form Inputs (The tricky part) */
+/* By default, inputs stay white. We must force them dark. */
+input {
+    background-color: #121212;
+    color: #B0B0B0;            /* Secondary Text */
+    border: 1px solid #444444; /* Dark Gray Border */
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;        /* Soft edges */
+}
+
+/* 4. Buttons */
+button {
+    background-color: #444444; /* Dark Gray */
+    color: #E0E0E0;            /* Light Gray Text */
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+button:hover {
+    background-color: #888888; /* Accent color on hover */
+    color: #121212;
+}
+
+/* 5. Links (Edit/Delete) */
+a {
+    color: #888888;            /* Accent Gray */
+    text-decoration: none;     /* Remove underline */
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+a:hover {
+    color: #E0E0E0;            /* Brighten on hover */
+    text-decoration: underline;
+}
+
+/* 6. List Items */
+li {
+    color: #B0B0B0;            /* Secondary Text */
+    padding: 5px 0;
+}
