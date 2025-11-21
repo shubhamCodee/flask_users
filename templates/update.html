@@ -2,7 +2,7 @@
 
 {% block content %}
 
-    <a href="{{ url_for('home') }}" class="text-secondary hover:text-primary text-sm mb-6 inline-block">
+    <a href="{{ url_for('user.home') }}" class="text-secondary hover:text-primary text-sm mb-6 inline-block">
         &larr; Back to Home
     </a>
 
@@ -10,7 +10,7 @@
         <h1 class="text-2xl font-bold mb-2 text-primary">Edit User</h1>
         <p class="text-secondary text-sm mb-6">Update the details for this user.</p>
         
-        <form action="" method="POST" class="flex flex-col gap-4">
+        <form action="{{ url_for('user.update_user', id=user.id) }}" autocomplete="off" method="POST" class="flex flex-col gap-4">
             
             <div>
                 <label class="block text-xs uppercase text-secondary mb-1 tracking-wider">Username</label>
@@ -30,7 +30,7 @@
                     Save Changes
                 </button>
                 
-                <a href="{{ url_for('home') }}" 
+                <a href="{{ url_for('user.home') }}" 
                    class="px-6 py-3 border border-darkgray text-secondary rounded hover:text-primary hover:border-softgray transition-colors text-center">
                    Cancel
                 </a>
