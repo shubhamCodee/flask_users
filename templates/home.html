@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <div class="text-center mb-12">
+        <h1 class="text-4xl font-bold text-primary mb-2">Welcome Back, Chief.</h1>
+        <p class="text-secondary text-lg">Your CRM data is ready. The AI Brain is standing by.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        <a href="{{ url_for('user.index') }}" class="group block p-6 bg-[#1E1E1E] border border-darkgray rounded-lg hover:border-softgray transition-all">
+            <h3 class="text-xl font-bold text-primary mb-2 group-hover:text-white">👥 Sales Team</h3>
+            <p class="text-secondary text-sm">Manage your sales representatives and admin users.</p>
+        </a>
+
+        <a href="{{ url_for('account.index') }}" class="group block p-6 bg-[#1E1E1E] border border-darkgray rounded-lg hover:border-softgray transition-all">
+            <h3 class="text-xl font-bold text-primary mb-2 group-hover:text-white">🏢 Accounts</h3>
+            <p class="text-secondary text-sm">View company profiles and client details.</p>
+        </a>
+
+        <a href="{{ url_for('lead.index') }}" class="group block p-6 bg-[#1E1E1E] border border-darkgray rounded-lg hover:border-softgray transition-all">
+            <h3 class="text-xl font-bold text-primary mb-2 group-hover:text-white">🎯 Leads</h3>
+            <p class="text-secondary text-sm">Track potential clients and lead sources.</p>
+        </a>
+
+        <a href="{{ url_for('opportunity.index') }}" class="group block p-6 bg-[#1E1E1E] border border-darkgray rounded-lg hover:border-softgray transition-all">
+            <h3 class="text-xl font-bold text-primary mb-2 group-hover:text-white">💰 Opportunities</h3>
+            <p class="text-secondary text-sm">Monitor deal stages, revenue, and pipeline health.</p>
+        </a>
+
+        <a href="{{ url_for('ai.index') }}" class="group block p-6 bg-gradient-to-br from-[#1E1E1E] to-[#2a2a2a] border border-softgray rounded-lg hover:shadow-lg hover:shadow-softgray/20 transition-all col-span-1 md:col-span-2 lg:col-span-2">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h3 class="text-2xl font-bold text-white mb-2">🤖 AI Intelligence Hub</h3>
+                    <p class="text-gray-300 text-sm">Ask complex questions about your data, generate summaries, and get strategic insights.</p>
+                </div>
+                <div class="text-4xl">→</div>
+            </div>
+        </a>
+
+    </div>
+
+{% endblock %}

@@ -1,0 +1,63 @@
+from config.database import db
+from datetime import datetime
+import uuid
+
+class Lead(db.Model):
+    __tablename__ = 'leads'
+
+    id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    name = db.Column(db.String(255), nullable=True)
+    description = db.Column(db.Text, nullable=True)
+    assigned_user_id = db.Column(db.String(36), db.ForeignKey('users.id'), nullable=True)
+    team_id = db.Column(db.String(36), nullable=True)
+    team_set_id = db.Column(db.String(36), nullable=True)
+    created_by = db.Column(db.String(36), nullable=True)
+    updated_by = db.Column(db.String(36), nullable=True)
+    email_primary = db.Column(db.String(255), nullable=True)
+    email_json = db.Column(db.Text, nullable=True)
+    phone_primary = db.Column(db.String(255), nullable=True)
+    phone_json = db.Column(db.Text, nullable=True)
+    lead_number = db.Column(db.Integer, autoincrement=True, nullable=False)
+    salutation = db.Column(db.String(10), nullable=True) # Mr, Mrs, etc.
+    first_name = db.Column(db.String(50), nullable=True)
+    last_name = db.Column(db.String(50), nullable=True)
+    designation = db.Column(db.String(50), nullable=True)
+    department = db.Column(db.String(50), nullable=True)
+    hierarchy = db.Column(db.String(50), nullable=True)
+    website = db.Column(db.String(255), nullable=True)
+    customer_type = db.Column(db.String(255), nullable=True)
+    industry = db.Column(db.String(255), nullable=True)
+    lead_source = db.Column(db.String(255), nullable=True)
+    other_source = db.Column(db.String(100), nullable=True)
+    status = db.Column(db.String(100), nullable=True)
+    product_sub_category = db.Column(db.String(255), nullable=True)
+    lost_reason = db.Column(db.String(255), nullable=True)
+    closed_date = db.Column(db.Date, nullable=True)
+    account_id_name = db.Column(db.String(100), nullable=True)
+    converted = db.Column(db.Boolean, default=False, nullable=False)
+    next_followup_date = db.Column(db.DateTime, nullable=True)
+    next_followup_type = db.Column(db.String(255), nullable=True)
+    area = db.Column(db.String(255), nullable=True)
+    address_type = db.Column(db.String(255), nullable=True)
+    street = db.Column(db.String(255), nullable=True)
+    city = db.Column(db.String(255), nullable=True)
+    state = db.Column(db.String(255), nullable=True)
+    country = db.Column(db.String(255), nullable=True)
+    postal_code = db.Column(db.String(255), nullable=True)
+    how_old_days = db.Column(db.Integer, nullable=True)
+    untouched_since_days = db.Column(db.Integer, nullable=True)
+    geofence_radius = db.Column(db.String(20), nullable=True)
+    geofence_latitude = db.Column(db.String(255), nullable=True)
+    geofence_longitude = db.Column(db.String(255), nullable=True)
+    how_old = db.Column(db.String(255), nullable=True)
+    untouched_since = db.Column(db.String(255), nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    deleted_at = db.Column(db.DateTime, nullable=True)
+    auto_updated_at = db.Column(db.DateTime, nullable=True)
+    auto_updated_by = db.Column(db.String(255), nullable=True)
+    latest_comment = db.Column(db.Text, nullable=True)
+    assigned_user = db.relationship('User', backref='leads', lazy=True)
+
+    def __repr__(self):
+        return f"<Lead {self.first_name} {self.last_name}>"

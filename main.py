@@ -1,12 +1,17 @@
 import os
-from flask import Flask
+from flask import Flask, render_template
 from dotenv import load_dotenv
+load_dotenv()
+
 from config.database import db
 from controllers.UserController import user_bp
+from controllers.AccountController import account_bp
+from controllers.LeadController import lead_bp
+from controllers.OpportunityController import opportunity_bp
+from controllers.AIController import ai_bp
 from services.AIService import AIService
 from services.UserService import UserService
 
-load_dotenv()
 
 def create_app():
     app = Flask(__name__)
@@ -19,16 +24,20 @@ def create_app():
 
     app.register_blueprint(user_bp, url_prefix='/users')
 
+    app.register_blueprint(account_bp, url_prefix='/accounts')
+
+    app.register_blueprint(lead_bp, url_prefix='/leads')
+
+    app.register_blueprint(opportunity_bp, url_prefix='/opportunities')
+
+    app.register_blueprint(ai_bp, url_prefix='/ai')
+
+    @app.route('/')
+    def home():
+        return render_template('home.html')
+
     with app.app_context():
         db.create_all()
-
-        ai_service = AIService()
-        
-        all_users = UserService.get_all_users()
-        
-        ai_service.train_with_users(all_users)
-        
-        app.ai_service = ai_service
 
     return app
 

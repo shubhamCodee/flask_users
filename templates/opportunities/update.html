@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <a href="{{ url_for('opportunity.index') }}" class="text-secondary hover:text-primary text-sm mb-6 inline-block">
+        &larr; Back to Pipeline
+    </a>
+
+    <div class="bg-[#1E1E1E] border border-darkgray rounded-lg p-8 shadow-xl max-w-2xl mx-auto mt-4">
+        <h1 class="text-2xl font-bold mb-2 text-primary">Edit Deal</h1>
+        
+        <form action="{{ url_for('opportunity.update_opportunity', id=opportunity.id) }}" autocomplete="off" method="POST" class="flex flex-col gap-6">
+            
+            <div>
+                <label class="block text-xs uppercase text-secondary mb-1 tracking-wider">Deal Name</label>
+                <input type="text" name="name" value="{{ opportunity.name }}" required
+                    class="w-full bg-charcoal border border-darkgray text-primary p-3 rounded focus:outline-none focus:border-softgray">
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs uppercase text-secondary mb-1 tracking-wider">Amount ($)</label>
+                    <input type="number" name="amount" step="0.01" value="{{ opportunity.amount }}"
+                        class="w-full bg-charcoal border border-darkgray text-primary p-3 rounded focus:outline-none focus:border-softgray">
+                </div>
+                <div>
+                    <label class="block text-xs uppercase text-secondary mb-1 tracking-wider">Probability (%)</label>
+                    <input type="number" name="probability" step="1" max="100" value="{{ opportunity.probability }}"
+                        class="w-full bg-charcoal border border-darkgray text-primary p-3 rounded focus:outline-none focus:border-softgray">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs uppercase text-secondary mb-1 tracking-wider">Stage</label>
+                    <select name="sales_stage" class="w-full bg-charcoal border border-darkgray text-primary p-3 rounded focus:outline-none focus:border-softgray">
+                        {% for stage in ['Prospecting', 'Qualification', 'Proposal', 'Negotiation', 'Closed Won', 'Closed Lost'] %}
+                            <option value="{{ stage }}" {% if opportunity.sales_stage == stage %}selected{% endif %}>{{ stage }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs uppercase text-secondary mb-1 tracking-wider">Expected Close Date</label>
+                    <input type="date" name="expected_closed_date" value="{{ opportunity.expected_closed_date }}"
+                        class="w-full bg-charcoal border border-darkgray text-primary p-3 rounded focus:outline-none focus:border-softgray">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs uppercase text-secondary mb-1 tracking-wider">Assigned To</label>
+                <select name="assigned_user_id" 
+                    class="w-full bg-charcoal border border-darkgray text-primary p-3 rounded focus:outline-none focus:border-softgray">
+                    <option value="">-- Unassigned --</option>
+                    {% for user in users %}
+                        <option value="{{ user.id }}" {% if opportunity.assigned_user_id == user.id %}selected{% endif %}>
+                            {{ user.username }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="flex gap-3 mt-4 pt-4 border-t border-darkgray">
+                <button type="submit" 
+                    class="flex-1 bg-softgray text-charcoal font-bold py-3 rounded hover:bg-primary transition-colors">
+                    Update Deal
+                </button>
+                <a href="{{ url_for('opportunity.index') }}" 
+                   class="px-6 py-3 border border-darkgray text-secondary rounded hover:text-primary hover:border-softgray transition-colors">
+                   Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+
+{% endblock %}

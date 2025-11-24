@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flask User Manager</title>
+    <title>Flask CRM AI</title>
     <script src="https://cdn.tailwindcss.com"></script>
     
     <script>
@@ -24,11 +24,32 @@
 
     <style>
         body { min-height: 100vh; }
+        /* Simple link hover effect */
+        .nav-link:hover { color: #E0E0E0; border-bottom: 1px solid #888888; }
     </style>
 </head>
 <body class="bg-charcoal text-primary font-sans antialiased p-8 flex justify-center">
 
-    <div class="w-full max-w-2xl">
+    <div class="w-full max-w-6xl">
+
+        <nav class="flex justify-between items-center pb-6 mb-8 border-b border-darkgray">
+            <a href="/" class="text-2xl font-bold tracking-tight text-primary">
+                CRM<span class="text-softgray">.ai</span>
+            </a>
+
+            <div class="flex space-x-8 text-sm font-medium text-secondary">
+                <a href="/" class="nav-link transition-all pb-1">Dashboard</a>
+                <a href="{{ url_for('user.index') }}" class="nav-link transition-all pb-1">Users</a>
+                <a href="{{ url_for('account.index') }}" class="nav-link transition-all pb-1">Accounts</a>
+                <a href="{{ url_for('lead.index') }}" class="nav-link transition-all pb-1">Leads</a>
+                <a href="{{ url_for('opportunity.index') }}" class="nav-link transition-all pb-1">Opportunities</a>
+                
+                <a href="{{ url_for('ai.index') }}" class="text-charcoal bg-primary hover:bg-white px-3 py-1 rounded transition-colors font-bold">
+                    🤖 Ask AI
+                </a>
+            </div>
+        </nav>
+
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 <div class="mb-8">

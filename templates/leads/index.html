@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <div class="border-b border-darkgray pb-4 mb-8 flex justify-between items-center">
+        <h1 class="text-3xl font-bold text-primary tracking-tight">Leads</h1>
+        
+        <a href="{{ url_for('lead.add_lead') }}" 
+           class="bg-darkgray text-primary hover:bg-softgray hover:text-charcoal px-4 py-2 rounded transition-all duration-200 text-sm font-medium">
+            + Add New Lead
+        </a>
+    </div>
+
+    <div class="bg-[#1E1E1E] border border-darkgray rounded-lg p-6 shadow-lg">
+        <h2 class="text-xl font-semibold mb-4 text-secondary">Potential Customers</h2>
+        
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="text-secondary text-sm border-b border-darkgray">
+                        <th class="py-3 font-medium uppercase tracking-wider">Lead Name</th>
+                        <th class="py-3 font-medium uppercase tracking-wider">Status / Source</th>
+                        <th class="py-3 font-medium uppercase tracking-wider">Contact Info</th>
+                        <th class="py-3 font-medium uppercase tracking-wider">Assigned To</th>
+                        <th class="py-3 font-medium uppercase tracking-wider text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="text-primary">
+                    {% for lead in leads %}
+                        <tr class="border-b border-darkgray last:border-0 hover:bg-[#2a2a2a] transition-colors">
+                            <td class="py-4 font-bold">
+                                {{ lead.first_name }} {{ lead.last_name }}
+                            </td>
+                            <td class="py-4">
+                                <div class="flex flex-col gap-1">
+                                    <span class="text-xs font-bold uppercase text-softgray tracking-wide">{{ lead.status or 'NEW' }}</span>
+                                    <span class="text-xs text-secondary">{{ lead.lead_source or 'Unknown' }}</span>
+                                </div>
+                            </td>
+                            <td class="py-4 text-sm">
+                                <div class="text-primary">{{ lead.email_primary or '' }}</div>
+                                <div class="text-secondary text-xs">{{ lead.phone_primary or '' }}</div>
+                            </td>
+                            <td class="py-4 text-sm">
+                                {% if lead.assigned_user %}
+                                    <span class="bg-blue-900/30 text-blue-200 px-2 py-1 rounded text-xs">
+                                        {{ lead.assigned_user.username }}
+                                    </span>
+                                {% else %}
+                                    <span class="text-darkgray italic">Unassigned</span>
+                                {% endif %}
+                            </td>
+                            <td class="py-4 text-right gap-3">
+                                <a href="{{ url_for('lead.update_lead', id=lead.id) }}" 
+                                   class="text-softgray hover:text-primary text-sm mr-3">Edit</a>
+                                <a href="{{ url_for('lead.delete_lead', id=lead.id) }}" 
+                                   class="text-red-400/70 hover:text-red-400 text-sm">Delete</a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="5" class="py-8 text-center text-secondary">
+                                No leads found. Start hunting!
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+{% endblock %}
