@@ -24,8 +24,12 @@
 
     <style>
         body { min-height: 100vh; }
-        /* Simple link hover effect */
-        .nav-link:hover { color: #E0E0E0; border-bottom: 1px solid #888888; }
+        /* Base link style */
+        .nav-link { border-bottom: 2px solid transparent; }
+        /* Hover effect */
+        .nav-link:hover { color: #E0E0E0; border-bottom: 2px solid #444444; }
+        /* Active State (Used in Jinja logic below) */
+        .nav-active { color: #FFFFFF !important; border-bottom: 2px solid #888888 !important; }
     </style>
 </head>
 <body class="bg-charcoal text-primary font-sans antialiased p-8 flex justify-center">
@@ -38,15 +42,38 @@
             </a>
 
             <div class="flex space-x-8 text-sm font-medium text-secondary">
-                <a href="/" class="nav-link transition-all pb-1">Dashboard</a>
-                <a href="{{ url_for('user.index') }}" class="nav-link transition-all pb-1">Users</a>
-                <a href="{{ url_for('account.index') }}" class="nav-link transition-all pb-1">Accounts</a>
-                <a href="{{ url_for('lead.index') }}" class="nav-link transition-all pb-1">Leads</a>
-                <a href="{{ url_for('opportunity.index') }}" class="nav-link transition-all pb-1">Opportunities</a>
                 
-                <a href="{{ url_for('ai.index') }}" class="text-charcoal bg-primary hover:bg-white px-3 py-1 rounded transition-colors font-bold">
+                <a href="/" 
+                   class="nav-link transition-all pb-1 {{ 'nav-active' if request.endpoint == 'home' else '' }}">
+                   Dashboard
+                </a>
+
+                <a href="{{ url_for('user.index') }}" 
+                   class="nav-link transition-all pb-1 {{ 'nav-active' if 'user' in request.endpoint else '' }}">
+                   Users
+                </a>
+
+                <a href="{{ url_for('account.index') }}" 
+                   class="nav-link transition-all pb-1 {{ 'nav-active' if 'account' in request.endpoint else '' }}">
+                   Accounts
+                </a>
+
+                <a href="{{ url_for('lead.index') }}" 
+                   class="nav-link transition-all pb-1 {{ 'nav-active' if 'lead' in request.endpoint else '' }}">
+                   Leads
+                </a>
+
+                <a href="{{ url_for('opportunity.index') }}" 
+                   class="nav-link transition-all pb-1 {{ 'nav-active' if 'opportunity' in request.endpoint else '' }}">
+                   Opportunities
+                </a>
+                
+                <a href="{{ url_for('ai.index') }}" 
+                   class="px-3 py-1 rounded transition-colors font-bold
+                          {{ 'bg-white text-charcoal' if 'ai' in request.endpoint else 'bg-primary text-charcoal hover:bg-white' }}">
                     🤖 Ask AI
                 </a>
+
             </div>
         </nav>
 

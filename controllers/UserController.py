@@ -1,10 +1,15 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app
+from flask import Blueprint, render_template, request, redirect, url_for, flash
 from services.UserService import UserService
 
 user_bp = Blueprint('user', __name__)
 
-@user_bp.route("/", methods=["GET", "POST"])
+@user_bp.route("/", methods=["GET"])
 def index():
+    users = UserService.get_all_users()
+    return render_template("users/index.html", users=users)
+
+@user_bp.route("/add", methods=["GET", "POST"])
+def add_user():
     if request.method == "POST":
         username = request.form.get("username")
         email = request.form.get("email")
@@ -13,13 +18,12 @@ def index():
         
         if success:
             flash("User added successfully!", "success")
+            return redirect(url_for("user.index"))
         else:
             flash("That email is already taken!", "error")
-            
-        return redirect(url_for("user.index"))
+            return render_template("users/add.html")
 
-    users = UserService.get_all_users()
-    return render_template("users/index.html", users=users)
+    return render_template("users/add.html")
 
 @user_bp.route("/update/<string:id>", methods=["GET", "POST"])
 def update_user(id):

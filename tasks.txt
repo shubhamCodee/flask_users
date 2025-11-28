@@ -1,3 +1,40 @@
-navbar
-fill all the data in data base
-generate 20 question which will be helpful for TL, Product Head or CEO
+1. What are the top 3 highest value opportunities currently in the pipeline? List their names and amounts.
+
+2. Based on our Closed Lost deals, what is the primary reason we are losing business?
+
+3. Give me a performance summary for Anjali Sharma. Which key accounts is she managing?
+
+
+4. List all the different Lead Sources for our active Leads. Which one came from a 'Webinar'?
+
+5. We are planning a field visit to Bengaluru. Which accounts or leads should we visit there?
+
+6. Which high-value deals are currently in the Negotiation stage? I need to intervene to close them.
+
+7. Which deals are expected to close in Q1 2024 (January to March)? List them with their expected close dates
+
+8. Identify active opportunities that have been open for 30 days or more. Who is managing them?
+
+9. What are the specific Lead Sources for our top 3 highest value deals? We need to know where the big money comes from.
+
+10. Which opportunities are related to 'API' or 'Integration' products? We need to assign a solution architect.
+
+11. List all deals where Contract Automation is enabled. Is the contract actually created for them?
+
+12. Identify deals with a Gross Profit of more than ₹5,00,000. Which one has the highest margin?
+
+13. Tell me the story of Zara Khan. How did she become a customer?
+
+14. Which prospect has the smallest Geofence Radius? I need to know who requires precise location tracking.
+
+15. Compare the pipeline of Rohan and Vikram. Who is handling higher value deals?
+
+16. Do we have any deals where we are facing competition from 'SAP' or 'Competitors'? What is the feedback?
+
+17. Are there any deals stuck or delayed due to 'Budget' issues? List them.
+
+18. Which records have 'Unassigned' owners? We need to assign them immediately.
+
+19. Prepare a detailed briefing on Tata Motors. I need the deal status, the account rating, and any risks regarding competitors.
+
+20. What are the immediate next actions scheduled for this week? List the meetings or calls planned.

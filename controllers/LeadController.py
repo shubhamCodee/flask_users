@@ -9,6 +9,11 @@ def index():
     leads = LeadService.get_all_leads()
     return render_template('leads/index.html', leads=leads)
 
+@lead_bp.route('/view/<string:id>')
+def view_lead(id):
+    lead = LeadService.get_lead_by_id(id)
+    return render_template('leads/view.html', lead=lead)
+
 @lead_bp.route('/add', methods=['GET', 'POST'])
 def add_lead():
     if request.method == 'POST':
@@ -24,7 +29,7 @@ def update_lead(id):
     
     if request.method == 'POST':
         LeadService.update_lead(id, request.form)
-        return redirect(url_for('lead.index'))
+        return redirect(url_for('lead.view_lead', id=id))
     
     users = UserService.get_all_users()
     return render_template('leads/update.html', lead=lead, users=users)

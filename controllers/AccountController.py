@@ -9,13 +9,17 @@ def index():
     accounts = AccountService.get_all_accounts()
     return render_template('accounts/index.html', accounts=accounts)
 
+@account_bp.route('/view/<string:id>')
+def view_account(id):
+    account = AccountService.get_account_by_id(id)
+    return render_template('accounts/view.html', account=account)
+
 @account_bp.route('/add', methods=['GET', 'POST'])
 def add_account():
     if request.method == 'POST':
         AccountService.create_account(request.form)
         return redirect(url_for('account.index'))
     
-    # We need users for the "Assigned User" dropdown
     users = UserService.get_all_users()
     return render_template('accounts/add.html', users=users)
 
@@ -25,9 +29,8 @@ def update_account(id):
     
     if request.method == 'POST':
         AccountService.update_account(id, request.form)
-        return redirect(url_for('account.index'))
+        return redirect(url_for('account.view_account', id=id))
     
-    # We need users for the dropdown here too
     users = UserService.get_all_users()
     return render_template('accounts/update.html', account=account, users=users)
 

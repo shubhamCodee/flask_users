@@ -2,70 +2,265 @@
 
 {% block content %}
 
-    <a href="{{ url_for('account.index') }}" class="text-secondary hover:text-primary text-sm mb-6 inline-block">
-        &larr; Back to Accounts
-    </a>
-
-    <div class="bg-[#1E1E1E] border border-darkgray rounded-lg p-8 shadow-xl max-w-2xl mx-auto mt-4">
-        <h1 class="text-2xl font-bold mb-2 text-primary">Edit Account</h1>
-        <p class="text-secondary text-sm mb-6">Update details for {{ account.name }}</p>
-        
-        <form action="{{ url_for('account.update_account', id=account.id) }}" autocomplete="off" method="POST" class="flex flex-col gap-6">
-            
-            <!-- Row 1 -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-xs uppercase text-secondary mb-1 tracking-wider">Account Name</label>
-                    <input type="text" name="name" value="{{ account.name }}" required
-                        class="w-full bg-charcoal border border-darkgray text-primary p-3 rounded focus:outline-none focus:border-softgray transition-colors">
-                </div>
-                <div>
-                    <label class="block text-xs uppercase text-secondary mb-1 tracking-wider">Industry</label>
-                    <input type="text" name="industry" value="{{ account.industry or '' }}"
-                        class="w-full bg-charcoal border border-darkgray text-primary p-3 rounded focus:outline-none focus:border-softgray transition-colors">
-                </div>
+    <!-- Header & Navigation -->
+    <div class="border-b border-darkgray pb-4 mb-8 flex justify-between items-end">
+        <div>
+            <div class="flex items-center gap-2 text-sm text-secondary mb-2">
+                <a href="{{ url_for('account.view_account', id=account.id) }}" class="hover:text-primary transition-colors">Back to View</a>
+                <span class="text-darkgray">/</span>
+                <span class="text-softgray">Edit Entry</span>
             </div>
-
-            <!-- Row 2 -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-xs uppercase text-secondary mb-1 tracking-wider">Email</label>
-                    <input type="email" name="email_primary" value="{{ account.email_primary or '' }}"
-                        class="w-full bg-charcoal border border-darkgray text-primary p-3 rounded focus:outline-none focus:border-softgray transition-colors">
-                </div>
-                <div>
-                    <label class="block text-xs uppercase text-secondary mb-1 tracking-wider">Phone</label>
-                    <input type="text" name="phone_primary" value="{{ account.phone_primary or '' }}"
-                        class="w-full bg-charcoal border border-darkgray text-primary p-3 rounded focus:outline-none focus:border-softgray transition-colors">
-                </div>
-            </div>
-
-            <!-- Row 3: Assigned User Dropdown with Selection Logic -->
-            <div>
-                <label class="block text-xs uppercase text-secondary mb-1 tracking-wider">Assigned Manager</label>
-                <select name="assigned_user_id" 
-                    class="w-full bg-charcoal border border-darkgray text-primary p-3 rounded focus:outline-none focus:border-softgray transition-colors">
-                    <option value="">-- Unassigned --</option>
-                    {% for user in users %}
-                        <option value="{{ user.id }}" 
-                            {% if account.assigned_user_id == user.id %}selected{% endif %}>
-                            {{ user.username }}
-                        </option>
-                    {% endfor %}
-                </select>
-            </div>
-
-            <div class="flex gap-3 mt-4 pt-4 border-t border-darkgray">
-                <button type="submit" 
-                    class="flex-1 bg-softgray text-charcoal font-bold py-3 rounded hover:bg-primary transition-colors">
-                    Save Changes
-                </button>
-                <a href="{{ url_for('account.index') }}" 
-                   class="px-6 py-3 border border-darkgray text-secondary rounded hover:text-primary hover:border-softgray transition-colors">
-                   Cancel
-                </a>
-            </div>
-        </form>
+            <h1 class="text-3xl font-bold text-primary tracking-tight">Edit: {{ account.name }}</h1>
+        </div>
     </div>
+
+    <!-- MAIN FORM -->
+    <form action="{{ url_for('account.update_account', id=account.id) }}" autocomplete="off" method="POST">
+        
+        <div class="bg-[#1E1E1E] border border-darkgray rounded-lg shadow-xl max-w-6xl mx-auto overflow-hidden">
+            
+            <!-- SECTION 1: CORE PROFILE -->
+            <div class="p-8 border-b border-darkgray">
+                <h2 class="text-xs font-bold uppercase tracking-widest text-softgray mb-6">1. Company Profile</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    
+                    <div class="col-span-1 md:col-span-2">
+                        <label class="block text-xs text-secondary mb-1">Account Name *</label>
+                        <input type="text" name="name" required class="form-input" value="{{ account.name or '' }}">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-xs text-secondary mb-1">Industry</label>
+                        <input type="text" name="industry" class="form-input" value="{{ account.industry or '' }}">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs text-secondary mb-1">Website</label>
+                        <input type="text" name="website" class="form-input" value="{{ account.website or '' }}">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs text-secondary mb-1">Rating</label>
+                        <input type="text" name="rating" class="form-input" value="{{ account.rating or '' }}" placeholder="Hot, Warm, Cold">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs text-secondary mb-1">Account Status</label>
+                        <input type="text" name="account_status" class="form-input" value="{{ account.account_status or '' }}">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs text-secondary mb-1">Customer Type</label>
+                        <input type="text" name="customer_type" class="form-input" value="{{ account.customer_type or '' }}">
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 2: CONTACT & COMMUNICATION -->
+            <div class="p-8 border-b border-darkgray bg-[#1a1a1a]">
+                <h2 class="text-xs font-bold uppercase tracking-widest text-softgray mb-6">2. Contact Details</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    
+                    <div>
+                        <label class="block text-xs text-secondary mb-1">Primary Email</label>
+                        <input type="email" name="email_primary" class="form-input" value="{{ account.email_primary or '' }}">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs text-secondary mb-1">Primary Phone</label>
+                        <input type="text" name="phone_primary" class="form-input" value="{{ account.phone_primary or '' }}">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs text-secondary mb-1">Email JSON Structure</label>
+                        <textarea name="email_json" rows="2" class="form-textarea font-mono text-xs">{{ account.email_json or '' }}</textarea>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs text-secondary mb-1">Phone JSON Structure</label>
+                        <textarea name="phone_json" rows="2" class="form-textarea font-mono text-xs">{{ account.phone_json or '' }}</textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 3: LOCATION & ADDRESS -->
+            <div class="p-8 border-b border-darkgray">
+                <h2 class="text-xs font-bold uppercase tracking-widest text-softgray mb-6">3. Address Information</h2>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    
+                    <div class="col-span-2">
+                        <label class="block text-xs text-secondary mb-1">Street Address</label>
+                        <input type="text" name="street" class="form-input" value="{{ account.street or '' }}">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-xs text-secondary mb-1">Area</label>
+                        <input type="text" name="area" class="form-input" value="{{ account.area or '' }}">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs text-secondary mb-1">City</label>
+                        <input type="text" name="city" class="form-input" value="{{ account.city or '' }}">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs text-secondary mb-1">State</label>
+                        <input type="text" name="state" class="form-input" value="{{ account.state or '' }}">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs text-secondary mb-1">Country</label>
+                        <input type="text" name="country" class="form-input" value="{{ account.country or '' }}">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs text-secondary mb-1">Postal Code</label>
+                        <input type="text" name="postal_code" class="form-input" value="{{ account.postal_code or '' }}">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs text-secondary mb-1">Address Type</label>
+                        <input type="text" name="address_type" class="form-input" value="{{ account.address_type or '' }}">
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 4: LEGAL & FINANCE -->
+            <div class="p-8 border-b border-darkgray bg-[#1a1a1a]">
+                <h2 class="text-xs font-bold uppercase tracking-widest text-softgray mb-6">4. Legal & Finance</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    
+                    <div>
+                        <label class="block text-xs text-secondary mb-1">GSTIN</label>
+                        <input type="text" name="gstin" class="form-input" value="{{ account.gstin or '' }}">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs text-secondary mb-1">PAN</label>
+                        <input type="text" name="pan" class="form-input" value="{{ account.pan or '' }}">
+                    </div>
+
+                    <div class="flex items-center pt-6">
+                        <label class="flex items-center cursor-pointer gap-3">
+                            <input type="checkbox" name="migrated_to_tally_branch" value="true" class="w-5 h-5 bg-charcoal border-darkgray rounded accent-primary"
+                            {% if account.migrated_to_tally_branch %}checked{% endif %}>
+                            <span class="text-sm text-primary">Migrated to Tally Branch</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 5: INTERNAL & SYSTEM IDS -->
+            <div class="p-8 border-b border-darkgray">
+                <h2 class="text-xs font-bold uppercase tracking-widest text-softgray mb-6">5. Internal System Data (IDs)</h2>
+                
+                <div class="mb-6 max-w-md">
+                    <label class="block text-xs text-secondary mb-1">Assigned Manager</label>
+                    <select name="assigned_user_id" class="form-input">
+                        <option value="">-- Select User --</option>
+                        {% for user in users %}
+                            <option value="{{ user.id }}" {% if account.assigned_user_id == user.id %}selected{% endif %}>
+                                {{ user.username }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 opacity-70 hover:opacity-100 transition-opacity">
+                    <div>
+                        <label class="block text-[10px] text-secondary mb-1">Team ID</label>
+                        <input type="text" name="team_id" class="form-input-sm" value="{{ account.team_id or '' }}">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] text-secondary mb-1">Helpdesk Team ID</label>
+                        <input type="text" name="helpdesk_user_team_id" class="form-input-sm" value="{{ account.helpdesk_user_team_id or '' }}">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] text-secondary mb-1">Partner Team ID</label>
+                        <input type="text" name="partner_user_team_id" class="form-input-sm" value="{{ account.partner_user_team_id or '' }}">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] text-secondary mb-1">Team Set ID</label>
+                        <input type="text" name="team_set_id" class="form-input-sm" value="{{ account.team_set_id or '' }}">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] text-secondary mb-1">Helpdesk Role ID</label>
+                        <input type="text" name="helpdesk_user_role_id" class="form-input-sm" value="{{ account.helpdesk_user_role_id or '' }}">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] text-secondary mb-1">Partner Role ID</label>
+                        <input type="text" name="partner_user_role_id" class="form-input-sm" value="{{ account.partner_user_role_id or '' }}">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] text-secondary mb-1">Updated By (ID)</label>
+                        <input type="text" name="updated_by" class="form-input-sm" value="{{ account.updated_by or '' }}">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] text-secondary mb-1">Auto Updated By</label>
+                        <input type="text" name="auto_updated_by" class="form-input-sm" value="{{ account.auto_updated_by or '' }}">
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 6: NOTES -->
+            <div class="p-8 bg-[#1a1a1a]">
+                <h2 class="text-xs font-bold uppercase tracking-widest text-softgray mb-6">6. Remarks</h2>
+                
+                <div class="grid grid-cols-1 gap-6">
+                    <div>
+                        <label class="block text-xs text-secondary mb-1">Description</label>
+                        <textarea name="description" rows="3" class="form-textarea">{{ account.description or '' }}</textarea>
+                    </div>
+                    <div>
+                        <label class="block text-xs text-secondary mb-1">Latest Comment</label>
+                        <textarea name="latest_comment" rows="3" class="form-textarea">{{ account.latest_comment or '' }}</textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FOOTER ACTION -->
+            <div class="p-8 border-t border-darkgray flex justify-end gap-4 bg-charcoal">
+                <a href="{{ url_for('account.view_account', id=account.id) }}" class="px-6 py-3 border border-darkgray text-secondary rounded hover:text-primary transition-colors">Cancel</a>
+                <button type="submit" class="bg-primary text-charcoal font-bold px-8 py-3 rounded hover:bg-white transition-all shadow-lg">
+                    Update Account
+                </button>
+            </div>
+
+        </div>
+    </form>
+
+    <style>
+        .form-input {
+            width: 100%;
+            background-color: #121212;
+            border: 1px solid #444444;
+            color: #E0E0E0;
+            padding: 0.75rem;
+            border-radius: 0.25rem;
+            transition: all 0.2s;
+        }
+        .form-input:focus { outline: none; border-color: #888888; }
+        
+        .form-input-sm {
+            width: 100%;
+            background-color: #121212;
+            border: 1px solid #333333;
+            color: #B0B0B0;
+            padding: 0.4rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+        }
+        .form-input-sm:focus { outline: none; border-color: #666666; }
+
+        .form-textarea {
+            width: 100%;
+            background-color: #121212;
+            border: 1px solid #444444;
+            color: #E0E0E0;
+            padding: 0.75rem;
+            border-radius: 0.25rem;
+        }
+        .form-textarea:focus { outline: none; border-color: #888888; }
+    </style>
 
 {% endblock %}

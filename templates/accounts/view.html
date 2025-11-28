@@ -1,0 +1,204 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <!-- TOP NAVIGATION -->
+    <div class="mb-6 flex justify-between items-center">
+        <a href="{{ url_for('account.index') }}" class="text-secondary hover:text-primary text-sm flex items-center gap-2 transition-colors">
+            <span>&larr;</span> Back to Directory
+        </a>
+        
+        <div class="flex gap-3">
+            <a href="{{ url_for('account.update_account', id=account.id) }}" 
+               class="bg-darkgray text-primary hover:bg-softgray hover:text-charcoal px-4 py-2 rounded text-sm font-bold transition-all">
+                Edit Account
+            </a>
+            <a href="{{ url_for('account.delete_account', id=account.id) }}" 
+               class="border border-red-900 text-red-400 hover:bg-red-900/20 px-4 py-2 rounded text-sm font-bold transition-all">
+                Delete
+            </a>
+        </div>
+    </div>
+
+    <!-- HEADER CARD -->
+    <div class="bg-[#1E1E1E] border border-darkgray rounded-lg p-8 shadow-2xl mb-6 relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-32 h-32 bg-softgray/5 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+                <div class="flex items-center gap-3 mb-2">
+                    <h1 class="text-4xl font-bold text-white tracking-tight">{{ account.name }}</h1>
+                    {% if account.rating == 'Hot' %}
+                        <span class="bg-red-900/30 text-red-400 border border-red-800 text-xs font-bold px-2 py-0.5 rounded uppercase">Hot</span>
+                    {% elif account.rating == 'Warm' %}
+                        <span class="bg-yellow-900/30 text-yellow-400 border border-yellow-800 text-xs font-bold px-2 py-0.5 rounded uppercase">Warm</span>
+                    {% endif %}
+                </div>
+                <div class="flex items-center gap-4 text-sm text-secondary">
+                    <span class="flex items-center gap-1"><i class="text-softgray">Industry:</i> {{ account.industry or 'N/A' }}</span>
+                    <span class="text-darkgray">•</span>
+                    <span class="flex items-center gap-1"><i class="text-softgray">Type:</i> {{ account.customer_type or 'Standard' }}</span>
+                    <span class="text-darkgray">•</span>
+                    <a href="{{ account.website }}" target="_blank" class="text-blue-400 hover:underline truncate max-w-[200px]">{{ account.website or '' }}</a>
+                </div>
+            </div>
+
+            <div class="text-right">
+                <div class="text-xs uppercase tracking-widest text-darkgray mb-1">Account Status</div>
+                <div class="text-xl font-mono font-bold
+                    {% if account.account_status == 'Active' %} text-green-400 
+                    {% elif account.account_status == 'Inactive' %} text-red-400 
+                    {% else %} text-secondary {% endif %}">
+                    {{ account.account_status or 'Unknown' }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3-COLUMN GRID LAYOUT -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+
+        <!-- COL 1: CONTACT & OWNER -->
+        <div class="space-y-6">
+            <div class="bg-[#1E1E1E] border border-darkgray rounded-lg p-6">
+                <h3 class="text-xs font-bold uppercase tracking-widest text-softgray mb-4 border-b border-darkgray pb-2">Contact Information</h3>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="text-[10px] uppercase text-darkgray block mb-0.5">Primary Email</label>
+                        <div class="text-primary font-medium">{{ account.email_primary or '-' }}</div>
+                    </div>
+                    <div>
+                        <label class="text-[10px] uppercase text-darkgray block mb-0.5">Primary Phone</label>
+                        <div class="text-primary font-mono">{{ account.phone_primary or '-' }}</div>
+                    </div>
+                    
+                    {% if account.email_json and account.email_json != '{}' %}
+                    <div>
+                        <label class="text-[10px] uppercase text-darkgray block mb-0.5">Secondary Emails (JSON)</label>
+                        <pre class="bg-[#121212] p-2 rounded border border-darkgray text-[10px] text-secondary font-mono overflow-x-auto">{{ account.email_json }}</pre>
+                    </div>
+                    {% endif %}
+
+                    {% if account.phone_json and account.phone_json != '{}' %}
+                    <div>
+                        <label class="text-[10px] uppercase text-darkgray block mb-0.5">Secondary Phones (JSON)</label>
+                        <pre class="bg-[#121212] p-2 rounded border border-darkgray text-[10px] text-secondary font-mono overflow-x-auto">{{ account.phone_json }}</pre>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="bg-[#1E1E1E] border border-darkgray rounded-lg p-6">
+                <h3 class="text-xs font-bold uppercase tracking-widest text-softgray mb-4 border-b border-darkgray pb-2">Account Owner</h3>
+                {% if account.assigned_user %}
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded bg-softgray/20 flex items-center justify-center text-lg font-bold text-softgray border border-darkgray">
+                            {{ account.assigned_user.username[:1] }}
+                        </div>
+                        <div>
+                            <div class="text-white font-bold">{{ account.assigned_user.username }}</div>
+                            <div class="text-xs text-secondary">{{ account.assigned_user.email }}</div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="text-secondary italic text-sm">No user assigned</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- COL 2: ADDRESS & LEGAL -->
+        <div class="space-y-6">
+            <div class="bg-[#1E1E1E] border border-darkgray rounded-lg p-6">
+                <h3 class="text-xs font-bold uppercase tracking-widest text-softgray mb-4 border-b border-darkgray pb-2">Location ({{ account.address_type or 'Primary' }})</h3>
+                
+                <div class="text-sm text-secondary leading-relaxed">
+                    {% if account.street %}{{ account.street }}<br>{% endif %}
+                    {% if account.area %}{{ account.area }}<br>{% endif %}
+                    <span class="text-primary font-bold">
+                        {{ account.city or '' }}{% if account.city and account.state %}, {% endif %}
+                        {{ account.state or '' }}
+                    </span><br>
+                    {{ account.country or '' }} 
+                    {% if account.postal_code %}<span class="font-mono text-xs bg-darkgray px-1 rounded text-primary ml-1">{{ account.postal_code }}</span>{% endif %}
+                </div>
+                
+                {% if not account.street and not account.city %}
+                    <div class="text-darkgray italic text-sm">No address on file.</div>
+                {% endif %}
+            </div>
+
+            <div class="bg-[#1E1E1E] border border-darkgray rounded-lg p-6">
+                <h3 class="text-xs font-bold uppercase tracking-widest text-softgray mb-4 border-b border-darkgray pb-2">Legal & Finance</h3>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-[10px] uppercase text-darkgray block mb-0.5">GSTIN</label>
+                        <div class="text-sm text-primary font-mono">{{ account.gstin or '-' }}</div>
+                    </div>
+                    <div>
+                        <label class="text-[10px] uppercase text-darkgray block mb-0.5">PAN Number</label>
+                        <div class="text-sm text-primary font-mono">{{ account.pan or '-' }}</div>
+                    </div>
+                </div>
+
+                {% if account.migrated_to_tally_branch %}
+                <div class="mt-4 flex items-center gap-2 bg-green-900/10 border border-green-900/30 p-2 rounded">
+                    <span class="text-green-500 text-xs">✓ Migrated to Tally Branch</span>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- COL 3: SYSTEM DATA & AUDIT -->
+        <div class="space-y-6">
+            <div class="bg-[#1E1E1E] border border-darkgray rounded-lg p-6">
+                <h3 class="text-xs font-bold uppercase tracking-widest text-softgray mb-4 border-b border-darkgray pb-2">Notes & Remarks</h3>
+                
+                <div class="mb-4">
+                    <label class="text-[10px] uppercase text-darkgray block mb-1">Description</label>
+                    <p class="text-sm text-secondary leading-relaxed text-justify">{{ account.description or 'No description provided.' }}</p>
+                </div>
+
+                {% if account.latest_comment %}
+                <div class="bg-[#121212] p-3 rounded border border-darkgray">
+                    <label class="text-[10px] uppercase text-softgray block mb-1">Latest Comment</label>
+                    <p class="text-xs text-primary italic">"{{ account.latest_comment }}"</p>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="bg-[#1E1E1E] border border-darkgray rounded-lg p-6">
+                <h3 class="text-xs font-bold uppercase tracking-widest text-softgray mb-4 border-b border-darkgray pb-2">System Internals</h3>
+                
+                <div class="grid grid-cols-2 gap-y-3 gap-x-2">
+                    <div>
+                        <label class="text-[10px] text-darkgray block">Team ID</label>
+                        <div class="text-[10px] font-mono text-secondary truncate" title="{{ account.team_id }}">{{ account.team_id or '-' }}</div>
+                    </div>
+                    <div>
+                        <label class="text-[10px] text-darkgray block">Team Set ID</label>
+                        <div class="text-[10px] font-mono text-secondary truncate" title="{{ account.team_set_id }}">{{ account.team_set_id or '-' }}</div>
+                    </div>
+                    <div class="col-span-2">
+                        <label class="text-[10px] text-darkgray block">Account UUID</label>
+                        <div class="text-[10px] font-mono text-softgray">{{ account.id }}</div>
+                    </div>
+                </div>
+
+                <div class="mt-4 pt-4 border-t border-darkgray">
+                    <div class="flex justify-between text-[10px] text-secondary mb-1">
+                        <span>Created:</span>
+                        <span class="font-mono">{{ account.created_at.strftime('%Y-%m-%d') }}</span>
+                    </div>
+                    <div class="flex justify-between text-[10px] text-secondary">
+                        <span>Last Updated:</span>
+                        <span class="font-mono">{{ account.updated_at.strftime('%Y-%m-%d') }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}

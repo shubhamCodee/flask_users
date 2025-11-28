@@ -9,6 +9,11 @@ def index():
     opportunities = OpportunityService.get_all_opportunities()
     return render_template('opportunities/index.html', opportunities=opportunities)
 
+@opportunity_bp.route('/view/<string:id>')
+def view_opportunity(id):
+    opportunity = OpportunityService.get_opportunity_by_id(id)
+    return render_template('opportunities/view.html', opportunity=opportunity)
+
 @opportunity_bp.route('/add', methods=['GET', 'POST'])
 def add_opportunity():
     if request.method == 'POST':
@@ -24,7 +29,7 @@ def update_opportunity(id):
     
     if request.method == 'POST':
         OpportunityService.update_opportunity(id, request.form)
-        return redirect(url_for('opportunity.index'))
+        return redirect(url_for('opportunity.view_opportunity', id=id))
     
     users = UserService.get_all_users()
     return render_template('opportunities/update.html', opportunity=opportunity, users=users)

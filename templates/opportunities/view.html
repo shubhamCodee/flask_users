@@ -1,0 +1,236 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <!-- TOP NAVIGATION -->
+    <div class="mb-6 flex justify-between items-center">
+        <a href="{{ url_for('opportunity.index') }}" class="text-secondary hover:text-primary text-sm flex items-center gap-2 transition-colors">
+            <span>&larr;</span> Back to Pipeline
+        </a>
+        
+        <div class="flex gap-3">
+            <a href="{{ url_for('opportunity.update_opportunity', id=opportunity.id) }}" 
+               class="bg-darkgray text-primary hover:bg-softgray hover:text-charcoal px-4 py-2 rounded text-sm font-bold transition-all">
+                Edit Deal
+            </a>
+            <a href="{{ url_for('opportunity.delete_opportunity', id=opportunity.id) }}" 
+               class="border border-red-900 text-red-400 hover:bg-red-900/20 px-4 py-2 rounded text-sm font-bold transition-all">
+                Delete
+            </a>
+        </div>
+    </div>
+
+    <!-- HEADER CARD: COMMERCIALS & STAGE -->
+    <div class="bg-[#1E1E1E] border border-darkgray rounded-lg p-8 shadow-2xl mb-6 relative overflow-hidden">
+        <!-- Background accent: Green for money -->
+        <div class="absolute top-0 right-0 w-32 h-32 bg-green-900/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+                <div class="flex items-center gap-3 mb-2">
+                    <h1 class="text-3xl font-bold text-white tracking-tight">{{ opportunity.name }}</h1>
+                    <span class="text-sm font-mono text-softgray border border-darkgray px-2 py-0.5 rounded bg-[#121212]">
+                        {{ opportunity.probability or 0 }}% Prob.
+                    </span>
+                </div>
+                
+                <div class="flex items-center gap-4 text-sm text-secondary">
+                    <span class="font-bold text-primary">{{ opportunity.opportunity_type or 'New Business' }}</span>
+                    <span class="text-darkgray">•</span>
+                    <span class="flex items-center gap-1">
+                        <i class="text-softgray">Source:</i> {{ opportunity.lead_source or 'Unknown' }}
+                    </span>
+                    <span class="text-darkgray">•</span>
+                    <span class="flex items-center gap-1">
+                        <i class="text-softgray">Priority:</i> {{ opportunity.priority or 'Medium' }}
+                    </span>
+                </div>
+            </div>
+
+            <div class="text-right flex flex-col items-end gap-1">
+                <div class="text-3xl font-bold text-white">
+                    <span class="text-softgray text-xl mr-1">₹</span>{{ "{:,.0f}".format(opportunity.amount) if opportunity.amount else '0' }}
+                </div>
+                <div class="text-sm uppercase tracking-widest font-bold px-3 py-1 rounded border mt-1
+                    {% if opportunity.sales_stage == 'Closed Won' %} text-green-400 border-green-900/50 bg-green-900/10
+                    {% elif opportunity.sales_stage == 'Closed Lost' %} text-red-400 border-red-900/50 bg-red-900/10
+                    {% elif opportunity.sales_stage == 'Negotiation' %} text-purple-400 border-purple-900/50 bg-purple-900/10
+                    {% else %} text-blue-400 border-blue-900/50 bg-blue-900/10 {% endif %}">
+                    {{ opportunity.sales_stage or 'Unknown Stage' }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3-COLUMN GRID LAYOUT -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+
+        <!-- COL 1: FINANCIALS & OWNER -->
+        <div class="space-y-6">
+            
+            <!-- Financial Breakdown -->
+            <div class="bg-[#1E1E1E] border border-darkgray rounded-lg p-6">
+                <h3 class="text-xs font-bold uppercase tracking-widest text-softgray mb-4 border-b border-darkgray pb-2">Financials</h3>
+                
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <label class="text-[10px] uppercase text-darkgray">Total Amount</label>
+                        <div class="text-primary font-bold">₹{{ "{:,.0f}".format(opportunity.amount) if opportunity.amount else '0' }}</div>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <label class="text-[10px] uppercase text-darkgray">Gross Profit</label>
+                        <div class="text-green-400 font-mono">₹{{ "{:,.0f}".format(opportunity.gross_profit) if opportunity.gross_profit else '0' }}</div>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <label class="text-[10px] uppercase text-darkgray">Quantity</label>
+                        <div class="text-secondary font-mono">{{ opportunity.quantity or '1' }}</div>
+                    </div>
+                    <div class="pt-2 border-t border-darkgray mt-2">
+                        <label class="text-[10px] uppercase text-darkgray block mb-1">Product Category</label>
+                        <div class="text-sm text-white">{{ opportunity.product_sub_category or '-' }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Assigned Owner -->
+            <div class="bg-[#1E1E1E] border border-darkgray rounded-lg p-6">
+                <h3 class="text-xs font-bold uppercase tracking-widest text-softgray mb-4 border-b border-darkgray pb-2">Deal Owner</h3>
+                {% if opportunity.assigned_user %}
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded bg-softgray/20 flex items-center justify-center text-lg font-bold text-softgray border border-darkgray">
+                            {{ opportunity.assigned_user.username[:1] }}
+                        </div>
+                        <div>
+                            <div class="text-white font-bold">{{ opportunity.assigned_user.username }}</div>
+                            <div class="text-xs text-secondary">{{ opportunity.assigned_user.email }}</div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="text-secondary italic text-sm">No user assigned</div>
+                {% endif %}
+                
+                <div class="mt-4 pt-4 border-t border-darkgray text-[10px] text-secondary flex justify-between">
+                    <span>Team ID:</span>
+                    <span class="font-mono text-darkgray">{{ opportunity.team_id or '-' }}</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- COL 2: TIMELINE & STATUS -->
+        <div class="space-y-6">
+            
+            <!-- Timeline Card -->
+            <div class="bg-[#1E1E1E] border border-darkgray rounded-lg p-6">
+                <h3 class="text-xs font-bold uppercase tracking-widest text-softgray mb-4 border-b border-darkgray pb-2">Timeline</h3>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="text-[10px] uppercase text-darkgray block mb-0.5">Expected Close Date</label>
+                        <div class="text-lg text-white font-bold">{{ opportunity.expected_closed_date.strftime('%d %B %Y') if opportunity.expected_closed_date else 'Not Set' }}</div>
+                    </div>
+                    
+                    <div class="bg-[#121212] p-3 rounded border border-darkgray">
+                        <label class="text-[10px] uppercase text-blue-400 block mb-1">Next Step</label>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-primary">{{ opportunity.next_followup_type or 'None' }}</span>
+                            <span class="text-xs text-secondary font-mono">{{ opportunity.next_followup_date.strftime('%d %b %H:%M') if opportunity.next_followup_date else '-' }}</span>
+                        </div>
+                    </div>
+
+                    {% if opportunity.closed_date %}
+                    <div>
+                        <label class="text-[10px] uppercase text-darkgray block mb-0.5">Actual Close Date</label>
+                        <div class="text-sm text-secondary font-mono">{{ opportunity.closed_date.strftime('%Y-%m-%d') }}</div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Lost Reason Block -->
+            {% if opportunity.sales_stage == 'Closed Lost' %}
+            <div class="bg-red-900/10 border border-red-900/30 rounded-lg p-6">
+                <h3 class="text-xs font-bold uppercase tracking-widest text-red-400 mb-2">Loss Analysis</h3>
+                <p class="text-sm text-red-200">{{ opportunity.lost_reason or 'No reason specified.' }}</p>
+            </div>
+            {% endif %}
+
+            <!-- Classification -->
+            <div class="bg-[#1E1E1E] border border-darkgray rounded-lg p-6">
+                <h3 class="text-xs font-bold uppercase tracking-widest text-softgray mb-4 border-b border-darkgray pb-2">Classification</h3>
+                <div class="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                        <label class="text-[10px] uppercase text-darkgray block">Customer Type</label>
+                        <div class="text-primary">{{ opportunity.customer_type or '-' }}</div>
+                    </div>
+                    <div>
+                        <label class="text-[10px] uppercase text-darkgray block">Type</label>
+                        <div class="text-primary">{{ opportunity.opportunity_type or '-' }}</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- COL 3: SYSTEM & NOTES -->
+        <div class="space-y-6">
+            
+            <!-- Pipeline Health -->
+            <div class="bg-[#1E1E1E] border border-darkgray rounded-lg p-6">
+                <h3 class="text-xs font-bold uppercase tracking-widest text-softgray mb-4 border-b border-darkgray pb-2">Pipeline Health</h3>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="text-center bg-[#121212] p-2 rounded border border-darkgray">
+                        <div class="text-xl font-bold text-white">{{ opportunity.how_old_days or 0 }}</div>
+                        <div class="text-[10px] text-secondary uppercase">Days Open</div>
+                    </div>
+                    <div class="text-center bg-[#121212] p-2 rounded border border-darkgray">
+                        <div class="text-xl font-bold {% if opportunity.untouched_since_days and opportunity.untouched_since_days > 7 %}text-red-400{% else %}text-white{% endif %}">
+                            {{ opportunity.untouched_since_days or 0 }}
+                        </div>
+                        <div class="text-[10px] text-secondary uppercase">Days Idle</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notes -->
+            <div class="bg-[#1E1E1E] border border-darkgray rounded-lg p-6">
+                <h3 class="text-xs font-bold uppercase tracking-widest text-softgray mb-4 border-b border-darkgray pb-2">Deal Notes</h3>
+                
+                <div class="mb-4">
+                    <label class="text-[10px] uppercase text-darkgray block mb-1">Description</label>
+                    <p class="text-sm text-secondary leading-relaxed text-justify">{{ opportunity.description or 'No description provided.' }}</p>
+                </div>
+
+                {% if opportunity.latest_comment %}
+                <div class="bg-[#121212] p-3 rounded border border-darkgray">
+                    <label class="text-[10px] uppercase text-softgray block mb-1">Latest Comment</label>
+                    <p class="text-xs text-primary italic">"{{ opportunity.latest_comment }}"</p>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- System Internals -->
+            <div class="bg-[#1E1E1E] border border-darkgray rounded-lg p-6 opacity-70 hover:opacity-100 transition-opacity">
+                <h3 class="text-xs font-bold uppercase tracking-widest text-softgray mb-4 border-b border-darkgray pb-2">System Audit</h3>
+                
+                <div class="grid grid-cols-1 gap-2 text-[10px] text-secondary">
+                    <div class="flex justify-between">
+                        <span>Deal UUID:</span>
+                        <span class="font-mono text-darkgray w-24 truncate">{{ opportunity.id }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Lead Created:</span>
+                        <span class="font-mono">{{ opportunity.lead_created_date.strftime('%Y-%m-%d') if opportunity.lead_created_date else '-' }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Last Updated:</span>
+                        <span class="font-mono">{{ opportunity.updated_at.strftime('%Y-%m-%d') }}</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+{% endblock %}

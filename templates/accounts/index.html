@@ -2,66 +2,143 @@
 
 {% block content %}
 
+    <!-- HEADER AREA -->
     <div class="border-b border-darkgray pb-4 mb-8 flex justify-between items-center">
-        <h1 class="text-3xl font-bold text-primary tracking-tight">Accounts</h1>
+        <div>
+            <h1 class="text-3xl font-bold text-primary tracking-tight">Account Directory</h1>
+            <p class="text-secondary text-sm mt-1">Manage your client portfolio and partners.</p>
+        </div>
         
-        <!-- Button to Add Page -->
+        <!-- Add Button -->
         <a href="{{ url_for('account.add_account') }}" 
-           class="bg-darkgray text-primary hover:bg-softgray hover:text-charcoal px-4 py-2 rounded transition-all duration-200 text-sm font-medium">
-            + Add New Account
+           class="bg-primary text-charcoal font-bold py-2 px-6 rounded hover:bg-white transition-all duration-200 shadow-lg hover:shadow-white/10 flex items-center gap-2">
+            <span>+</span> Add Organization
         </a>
     </div>
 
-    <div class="bg-[#1E1E1E] border border-darkgray rounded-lg p-6 shadow-lg">
-        <h2 class="text-xl font-semibold mb-4 text-secondary">Company Directory</h2>
+    <!-- MAIN DATA TABLE -->
+    <div class="bg-[#1E1E1E] border border-darkgray rounded-lg shadow-xl overflow-hidden">
         
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
                 <thead>
-                    <tr class="text-secondary text-sm border-b border-darkgray">
-                        <th class="py-3 font-medium uppercase tracking-wider">Account Name</th>
-                        <th class="py-3 font-medium uppercase tracking-wider">Industry</th>
-                        <th class="py-3 font-medium uppercase tracking-wider">Contact</th>
-                        <th class="py-3 font-medium uppercase tracking-wider">Assigned To</th>
-                        <th class="py-3 font-medium uppercase tracking-wider text-right">Actions</th>
+                    <tr class="bg-[#121212] text-secondary text-xs uppercase tracking-wider border-b border-darkgray">
+                        <th class="py-4 px-6 font-bold w-1/4">Organization</th>
+                        <th class="py-4 px-4 font-bold">Status & Type</th>
+                        <th class="py-4 px-4 font-bold">Location</th>
+                        <th class="py-4 px-4 font-bold">Contact</th>
+                        <th class="py-4 px-4 font-bold">Owner</th>
+                        <th class="py-4 px-6 font-bold text-right">Actions</th>
                     </tr>
                 </thead>
-                <tbody class="text-primary">
+                <tbody class="text-primary divide-y divide-darkgray">
                     {% for account in accounts %}
-                        <tr class="border-b border-darkgray last:border-0 hover:bg-[#2a2a2a] transition-colors">
-                            <td class="py-4 font-bold">{{ account.name }}</td>
-                            <td class="py-4 text-secondary text-sm">{{ account.industry or '-' }}</td>
-                            <td class="py-4 text-sm">
-                                <div class="text-primary">{{ account.email_primary or '' }}</div>
-                                <div class="text-secondary text-xs">{{ account.phone_primary or '' }}</div>
+                        <tr class="hover:bg-[#252525] transition-colors group">
+                            
+                            <!-- COL 1: Name & Industry -->
+                            <td class="py-4 px-6 align-top">
+                                <a href="{{ url_for('account.view_account', id=account.id) }}" 
+                                   class="text-lg font-bold text-primary group-hover:text-white hover:underline decoration-softgray underline-offset-4 block mb-1">
+                                    {{ account.name }}
+                                </a>
+                                <div class="flex items-center gap-2 text-xs text-secondary">
+                                    <span class="uppercase tracking-wide">{{ account.industry or 'Unknown Industry' }}</span>
+                                    {% if account.rating == 'Hot' %}
+                                        <span class="text-red-400">🔥 Hot</span>
+                                    {% elif account.rating == 'Warm' %}
+                                        <span class="text-yellow-400">⚡ Warm</span>
+                                    {% endif %}
+                                </div>
                             </td>
-                            <td class="py-4 text-sm">
-                                <!-- MAGIC RELATIONSHIP IN ACTION -->
-                                {% if account.assigned_user %}
-                                    <span class="bg-blue-900/30 text-blue-200 px-2 py-1 rounded text-xs">
-                                        {{ account.assigned_user.username }}
+
+                            <!-- COL 2: Status Badge -->
+                            <td class="py-4 px-4 align-top">
+                                <div class="flex flex-col items-start gap-1">
+                                    <span class="px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider
+                                        {% if account.account_status == 'Active' %} bg-green-900/30 text-green-400 border border-green-800
+                                        {% elif account.account_status == 'Inactive' %} bg-red-900/30 text-red-400 border border-red-800
+                                        {% else %} bg-gray-800 text-gray-400 border border-gray-600 {% endif %}">
+                                        {{ account.account_status or 'Unknown' }}
                                     </span>
+                                    <span class="text-xs text-darkgray">{{ account.customer_type or '-' }}</span>
+                                </div>
+                            </td>
+
+                            <!-- COL 3: Location -->
+                            <td class="py-4 px-4 align-top text-sm">
+                                <div class="text-primary">{{ account.city or '-' }}</div>
+                                <div class="text-secondary text-xs">{{ account.country or '-' }}</div>
+                            </td>
+
+                            <!-- COL 4: Contact -->
+                            <td class="py-4 px-4 align-top">
+                                <div class="text-sm text-primary mb-1">{{ account.email_primary or '-' }}</div>
+                                <div class="text-xs text-softgray font-mono">{{ account.phone_primary or '-' }}</div>
+                            </td>
+
+                            <!-- COL 5: Assigned User -->
+                            <td class="py-4 px-4 align-top">
+                                {% if account.assigned_user %}
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-6 h-6 rounded-full bg-softgray/20 flex items-center justify-center text-[10px] font-bold text-softgray border border-darkgray">
+                                            {{ account.assigned_user.username[:1] }}
+                                        </div>
+                                        <span class="text-sm text-secondary">{{ account.assigned_user.username }}</span>
+                                    </div>
                                 {% else %}
-                                    <span class="text-darkgray italic">Unassigned</span>
+                                    <span class="text-darkgray text-xs italic border border-dashed border-darkgray px-2 py-1 rounded">Unassigned</span>
                                 {% endif %}
                             </td>
-                            <td class="py-4 text-right gap-3">
-                                <a href="{{ url_for('account.update_account', id=account.id) }}" 
-                                   class="text-softgray hover:text-primary text-sm mr-3">Edit</a>
-                                <a href="{{ url_for('account.delete_account', id=account.id) }}" 
-                                   class="text-red-400/70 hover:text-red-400 text-sm">Delete</a>
+
+                            <!-- COL 6: Actions -->
+                            <td class="py-4 px-6 align-top text-right">
+                                <div class="flex justify-end items-center gap-3 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <!-- VIEW BUTTON (Primary Action) -->
+                                    <a href="{{ url_for('account.view_account', id=account.id) }}" 
+                                       class="text-xs font-bold uppercase tracking-wider text-softgray hover:text-white border border-darkgray hover:border-softgray px-3 py-1 rounded transition-all">
+                                        View
+                                    </a>
+                                    
+                                    <!-- Edit (Icon style) -->
+                                    <a href="{{ url_for('account.update_account', id=account.id) }}" 
+                                       class="text-secondary hover:text-primary transition-colors" title="Edit">
+                                        ✎
+                                    </a>
+                                    
+                                    <!-- Delete (Icon style) -->
+                                    <a href="{{ url_for('account.delete_account', id=account.id) }}" 
+                                       class="text-red-900 hover:text-red-400 transition-colors" title="Delete">
+                                        ✕
+                                    </a>
+                                </div>
                             </td>
+
                         </tr>
                     {% else %}
+                        <!-- EMPTY STATE -->
                         <tr>
-                            <td colspan="5" class="py-8 text-center text-secondary">
-                                No accounts found. Click "Add New Account" to start!
+                            <td colspan="6" class="py-12 text-center">
+                                <div class="flex flex-col items-center justify-center text-secondary opacity-50">
+                                    <div class="text-5xl mb-4">🏢</div>
+                                    <h3 class="text-xl font-light">No Accounts Found</h3>
+                                    <p class="text-sm mt-2 max-w-xs">Start building your database by adding a new organization.</p>
+                                </div>
                             </td>
                         </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
+        
+        <!-- FOOTER / PAGINATION (Visual Only for now) -->
+        <div class="bg-[#121212] p-4 border-t border-darkgray flex justify-between items-center text-xs text-secondary">
+            <span>Showing {{ accounts|length }} records</span>
+            <div class="flex gap-2">
+                <span class="opacity-50 cursor-not-allowed">Previous</span>
+                <span class="opacity-50 cursor-not-allowed">Next</span>
+            </div>
+        </div>
+
     </div>
 
 {% endblock %}

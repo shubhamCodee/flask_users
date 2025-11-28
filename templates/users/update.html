@@ -2,7 +2,7 @@
 
 {% block content %}
 
-    <a href="{{ url_for('user.home') }}" class="text-secondary hover:text-primary text-sm mb-6 inline-block">
+    <a href="{{ url_for('user.index') }}" class="text-secondary hover:text-primary text-sm mb-6 inline-block">
         &larr; Back to Home
     </a>
 
@@ -30,7 +30,7 @@
                     Save Changes
                 </button>
                 
-                <a href="{{ url_for('user.home') }}" 
+                <a href="{{ url_for('user.index') }}" 
                    class="px-6 py-3 border border-darkgray text-secondary rounded hover:text-primary hover:border-softgray transition-colors text-center">
                    Cancel
                 </a>

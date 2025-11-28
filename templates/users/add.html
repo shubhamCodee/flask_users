@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <!-- Breadcrumb / Header -->
+    <div class="border-b border-darkgray pb-4 mb-8">
+        <div class="flex items-center gap-2 text-sm text-secondary mb-2">
+            <a href="{{ url_for('user.index') }}" class="hover:text-primary transition-colors">User Manager</a>
+            <span class="text-darkgray">/</span>
+            <span class="text-softgray">New Entry</span>
+        </div>
+        <h1 class="text-3xl font-bold text-primary tracking-tight">Add New User</h1>
+    </div>
+
+    <!-- Form Container -->
+    <div class="max-w-3xl mx-auto">
+        <form action="{{ url_for('user.add_user') }}" autocomplete="off" method="POST">
+            
+            <div class="bg-[#1E1E1E] border border-darkgray rounded-lg p-8 shadow-lg">
+                <h2 class="text-xl font-semibold mb-6 text-primary border-b border-darkgray pb-2">Account Details</h2>
+
+                <!-- Input Grid -->
+                <div class="grid grid-cols-1 gap-6 mb-8">
+                    
+                    <!-- Field: Username -->
+                    <div class="flex flex-col gap-2">
+                        <label class="text-xs font-bold uppercase tracking-wider text-secondary">Username</label>
+                        <input type="text" name="username" placeholder="e.g. jdoe_sales" required autofocus
+                            class="bg-charcoal border border-darkgray text-primary p-4 rounded focus:outline-none focus:border-softgray focus:ring-1 focus:ring-softgray transition-all placeholder-darkgray">
+                    </div>
+
+                    <!-- Field: Email -->
+                    <div class="flex flex-col gap-2">
+                        <label class="text-xs font-bold uppercase tracking-wider text-secondary">Email Address</label>
+                        <input type="email" name="email" placeholder="e.g. john.doe@company.com" required
+                            class="bg-charcoal border border-darkgray text-primary p-4 rounded focus:outline-none focus:border-softgray focus:ring-1 focus:ring-softgray transition-all placeholder-darkgray">
+                    </div>
+
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex items-center justify-end gap-4 border-t border-darkgray pt-6">
+                    <a href="{{ url_for('user.index') }}" 
+                       class="text-secondary hover:text-primary px-4 py-2 transition-colors text-sm font-medium">
+                        Cancel
+                    </a>
+                    
+                    <button type="submit" 
+                        class="bg-primary text-charcoal font-bold py-3 px-8 rounded hover:bg-white transition-all shadow-lg">
+                        Save User
+                    </button>
+                </div>
+
+            </div>
+        </form>
+    </div>
+
+{% endblock %}

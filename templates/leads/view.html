@@ -1,0 +1,284 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <!-- TOP NAVIGATION -->
+    <div class="mb-6 flex justify-between items-center">
+        <a href="{{ url_for('lead.index') }}" class="text-secondary hover:text-primary text-sm flex items-center gap-2 transition-colors">
+            <span>&larr;</span> Back to Pipeline
+        </a>
+        
+        <div class="flex gap-3">
+            <a href="{{ url_for('lead.update_lead', id=lead.id) }}" 
+               class="bg-darkgray text-primary hover:bg-softgray hover:text-charcoal px-4 py-2 rounded text-sm font-bold transition-all">
+                Edit Lead
+            </a>
+            <a href="{{ url_for('lead.delete_lead', id=lead.id) }}" 
+               class="border border-red-900 text-red-400 hover:bg-red-900/20 px-4 py-2 rounded text-sm font-bold transition-all">
+                Delete
+            </a>
+        </div>
+    </div>
+
+    <!-- HEADER CARD -->
+    <div class="bg-[#1E1E1E] border border-darkgray rounded-lg p-8 shadow-2xl mb-6 relative overflow-hidden">
+        <!-- Background accent: Blue for leads -->
+        <div class="absolute top-0 right-0 w-32 h-32 bg-blue-900/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div class="flex items-start gap-5">
+                <!-- Avatar / Initials -->
+                <div class="w-20 h-20 rounded-xl bg-gradient-to-br from-charcoal to-darkgray border border-darkgray flex items-center justify-center text-3xl font-bold text-softgray shadow-inner">
+                    {{ lead.first_name[:1] }}{{ lead.last_name[:1] }}
+                </div>
+
+                <div>
+                    <h1 class="text-4xl font-bold text-white tracking-tight mb-1">
+                        <span class="text-secondary text-2xl font-light mr-1">{{ lead.salutation }}</span>
+                        {{ lead.first_name }} {{ lead.last_name }}
+                    </h1>
+                    
+                    <div class="flex items-center gap-3 text-sm text-secondary">
+                        <span class="font-bold text-primary">{{ lead.designation or 'Unknown Title' }}</span>
+                        <span class="text-darkgray">@</span>
+                        <span class="font-bold text-primary">{{ lead.account_id_name or 'Independent' }}</span>
+                        
+                        <span class="text-darkgray">•</span>
+                        
+                        <span class="flex items-center gap-1">
+                            <i class="text-softgray">Via:</i> {{ lead.lead_source or 'Direct' }}
+                        </span>
+                    </div>
+
+                    {% if lead.website %}
+                        <a href="{{ lead.website }}" target="_blank" class="text-xs text-blue-400 hover:underline mt-2 block">{{ lead.website }}</a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="text-right flex flex-col items-end gap-2">
+                <div class="text-xs uppercase tracking-widest text-darkgray">Pipeline Status</div>
+                <div class="text-xl font-mono font-bold px-3 py-1 rounded border
+                    {% if lead.status == 'New' %} text-blue-400 border-blue-900/50 bg-blue-900/10
+                    {% elif lead.status == 'Qualified' %} text-purple-400 border-purple-900/50 bg-purple-900/10
+                    {% elif lead.status == 'Converted' %} text-green-400 border-green-900/50 bg-green-900/10
+                    {% elif lead.status == 'Lost' %} text-red-400 border-red-900/50 bg-red-900/10
+                    {% else %} text-gray-400 border-gray-700 bg-gray-800/30 {% endif %}">
+                    {{ lead.status or 'Unknown' }}
+                </div>
+                
+                {% if lead.converted %}
+                    <span class="text-[10px] text-green-500 font-bold uppercase tracking-widest flex items-center gap-1">
+                        ✓ Converted to Deal
+                    </span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- 3-COLUMN GRID LAYOUT -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+
+        <!-- COL 1: CONTACT & SEGMENTATION -->
+        <div class="space-y-6">
+            
+            <!-- Contact Card -->
+            <div class="bg-[#1E1E1E] border border-darkgray rounded-lg p-6">
+                <h3 class="text-xs font-bold uppercase tracking-widest text-softgray mb-4 border-b border-darkgray pb-2">Contact Channels</h3>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="text-[10px] uppercase text-darkgray block mb-0.5">Primary Email</label>
+                        <a href="mailto:{{ lead.email_primary }}" class="text-primary font-medium hover:text-blue-400 transition-colors">{{ lead.email_primary or '-' }}</a>
+                    </div>
+                    <div>
+                        <label class="text-[10px] uppercase text-darkgray block mb-0.5">Primary Phone</label>
+                        <a href="tel:{{ lead.phone_primary }}" class="text-primary font-mono hover:text-blue-400 transition-colors">{{ lead.phone_primary or '-' }}</a>
+                    </div>
+                    
+                    {% if lead.email_json and lead.email_json != '{}' %}
+                    <div>
+                        <label class="text-[10px] uppercase text-darkgray block mb-0.5">Other Emails</label>
+                        <pre class="bg-[#121212] p-2 rounded border border-darkgray text-[10px] text-secondary font-mono overflow-x-auto">{{ lead.email_json }}</pre>
+                    </div>
+                    {% endif %}
+
+                    {% if lead.phone_json and lead.phone_json != '{}' %}
+                    <div>
+                        <label class="text-[10px] uppercase text-darkgray block mb-0.5">Other Phones</label>
+                        <pre class="bg-[#121212] p-2 rounded border border-darkgray text-[10px] text-secondary font-mono overflow-x-auto">{{ lead.phone_json }}</pre>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Segmentation Card -->
+            <div class="bg-[#1E1E1E] border border-darkgray rounded-lg p-6">
+                <h3 class="text-xs font-bold uppercase tracking-widest text-softgray mb-4 border-b border-darkgray pb-2">Segmentation</h3>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-[10px] uppercase text-darkgray block mb-0.5">Industry</label>
+                        <div class="text-sm text-primary">{{ lead.industry or '-' }}</div>
+                    </div>
+                    <div>
+                        <label class="text-[10px] uppercase text-darkgray block mb-0.5">Type</label>
+                        <div class="text-sm text-primary">{{ lead.customer_type or '-' }}</div>
+                    </div>
+                    <div>
+                        <label class="text-[10px] uppercase text-darkgray block mb-0.5">Department</label>
+                        <div class="text-sm text-secondary">{{ lead.department or '-' }}</div>
+                    </div>
+                    <div>
+                        <label class="text-[10px] uppercase text-darkgray block mb-0.5">Hierarchy</label>
+                        <div class="text-sm text-secondary">{{ lead.hierarchy or '-' }}</div>
+                    </div>
+                    <div class="col-span-2">
+                        <label class="text-[10px] uppercase text-darkgray block mb-0.5">Product Interest</label>
+                        <div class="text-sm text-softgray border border-darkgray rounded px-2 py-1 inline-block">{{ lead.product_sub_category or 'General' }}</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- COL 2: LOCATION & LOGISTICS -->
+        <div class="space-y-6">
+            
+            <!-- Address Card -->
+            <div class="bg-[#1E1E1E] border border-darkgray rounded-lg p-6">
+                <h3 class="text-xs font-bold uppercase tracking-widest text-softgray mb-4 border-b border-darkgray pb-2">Location ({{ lead.address_type or 'Primary' }})</h3>
+                
+                <div class="text-sm text-secondary leading-relaxed mb-4">
+                    {% if lead.street %}{{ lead.street }}<br>{% endif %}
+                    {% if lead.area %}{{ lead.area }}<br>{% endif %}
+                    <span class="text-primary font-bold">
+                        {{ lead.city or '' }}{% if lead.city and lead.state %}, {% endif %}
+                        {{ lead.state or '' }}
+                    </span><br>
+                    {{ lead.country or '' }} 
+                    {% if lead.postal_code %}<span class="font-mono text-xs bg-darkgray px-1 rounded text-primary ml-1">{{ lead.postal_code }}</span>{% endif %}
+                </div>
+
+                <!-- Geofence Mini-Block -->
+                {% if lead.geofence_latitude and lead.geofence_longitude %}
+                <div class="bg-[#121212] p-3 rounded border border-darkgray">
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-[10px] uppercase text-softgray">Geofence Data</span>
+                        <span class="text-[10px] text-blue-400">Radius: {{ lead.geofence_radius or 'N/A' }}</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 font-mono text-xs text-secondary">
+                        <div>LAT: {{ lead.geofence_latitude }}</div>
+                        <div>LNG: {{ lead.geofence_longitude }}</div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Assigned Owner -->
+            <div class="bg-[#1E1E1E] border border-darkgray rounded-lg p-6">
+                <h3 class="text-xs font-bold uppercase tracking-widest text-softgray mb-4 border-b border-darkgray pb-2">Assigned Owner</h3>
+                {% if lead.assigned_user %}
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded bg-softgray/20 flex items-center justify-center text-lg font-bold text-softgray border border-darkgray">
+                            {{ lead.assigned_user.username[:1] }}
+                        </div>
+                        <div>
+                            <div class="text-white font-bold">{{ lead.assigned_user.username }}</div>
+                            <div class="text-xs text-secondary">{{ lead.assigned_user.email }}</div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="text-secondary italic text-sm">No user assigned</div>
+                {% endif %}
+                
+                <div class="mt-4 pt-4 border-t border-darkgray">
+                    <label class="text-[10px] uppercase text-darkgray block mb-1">Internal Team</label>
+                    <div class="text-xs text-secondary font-mono">{{ lead.team_id or 'Global' }}</div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- COL 3: PIPELINE METRICS & SYSTEM -->
+        <div class="space-y-6">
+            
+            <!-- Pipeline Health (Metrics) -->
+            <div class="bg-[#1E1E1E] border border-darkgray rounded-lg p-6">
+                <h3 class="text-xs font-bold uppercase tracking-widest text-softgray mb-4 border-b border-darkgray pb-2">Pipeline Health</h3>
+                
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div class="bg-[#121212] p-3 rounded text-center border border-darkgray">
+                        <div class="text-2xl font-bold text-primary">{{ lead.how_old_days or '0' }}</div>
+                        <div class="text-[10px] uppercase text-secondary">Days in System</div>
+                    </div>
+                    <div class="bg-[#121212] p-3 rounded text-center border border-darkgray">
+                        <div class="text-2xl font-bold {% if lead.untouched_since_days and lead.untouched_since_days > 7 %}text-red-400{% else %}text-primary{% endif %}">
+                            {{ lead.untouched_since_days or '0' }}
+                        </div>
+                        <div class="text-[10px] uppercase text-secondary">Days Untouched</div>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <div>
+                        <label class="text-[10px] uppercase text-darkgray">Next Follow Up</label>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm font-bold text-white">{{ lead.next_followup_date.strftime('%Y-%m-%d %H:%M') if lead.next_followup_date else 'Not Scheduled' }}</span>
+                            {% if lead.next_followup_type %}
+                                <span class="text-[10px] bg-darkgray px-2 py-0.5 rounded text-secondary">{{ lead.next_followup_type }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    {% if lead.status == 'Lost' %}
+                    <div class="mt-2 p-2 bg-red-900/10 border border-red-900/30 rounded">
+                        <label class="text-[10px] uppercase text-red-400 block">Lost Reason</label>
+                        <div class="text-xs text-red-200">{{ lead.lost_reason or 'Not Specified' }}</div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Notes -->
+            <div class="bg-[#1E1E1E] border border-darkgray rounded-lg p-6">
+                <h3 class="text-xs font-bold uppercase tracking-widest text-softgray mb-4 border-b border-darkgray pb-2">Notes</h3>
+                
+                <div class="mb-4">
+                    <label class="text-[10px] uppercase text-darkgray block mb-1">Description</label>
+                    <p class="text-sm text-secondary leading-relaxed text-justify">{{ lead.description or 'No description provided.' }}</p>
+                </div>
+
+                {% if lead.latest_comment %}
+                <div class="bg-[#121212] p-3 rounded border border-darkgray">
+                    <label class="text-[10px] uppercase text-softgray block mb-1">Latest Comment</label>
+                    <p class="text-xs text-primary italic">"{{ lead.latest_comment }}"</p>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- System Internals -->
+            <div class="bg-[#1E1E1E] border border-darkgray rounded-lg p-6 opacity-70 hover:opacity-100 transition-opacity">
+                <h3 class="text-xs font-bold uppercase tracking-widest text-softgray mb-4 border-b border-darkgray pb-2">System Audit</h3>
+                
+                <div class="grid grid-cols-1 gap-2 text-[10px] text-secondary">
+                    <div class="flex justify-between">
+                        <span>Lead UUID:</span>
+                        <span class="font-mono text-darkgray w-24 truncate">{{ lead.id }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Created By:</span>
+                        <span class="font-mono">{{ lead.created_by or 'System' }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Created:</span>
+                        <span class="font-mono">{{ lead.created_at.strftime('%Y-%m-%d') }}</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+{% endblock %}

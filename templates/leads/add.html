@@ -2,89 +2,321 @@
 
 {% block content %}
 
-    <a href="{{ url_for('lead.index') }}" class="text-secondary hover:text-primary text-sm mb-6 inline-block">
-        &larr; Back to Leads
-    </a>
-
-    <div class="bg-[#1E1E1E] border border-darkgray rounded-lg p-8 shadow-xl max-w-2xl mx-auto mt-4">
-        <h1 class="text-2xl font-bold mb-2 text-primary">New Lead</h1>
-        <p class="text-secondary text-sm mb-6">Enter lead details.</p>
-        
-        <form action="{{ url_for('lead.add_lead') }}" autocomplete="off" method="POST" class="flex flex-col gap-6">
-            
-            <!-- Row 1: Name -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-xs uppercase text-secondary mb-1 tracking-wider">First Name *</label>
-                    <input type="text" name="first_name" required
-                        class="w-full bg-charcoal border border-darkgray text-primary p-3 rounded focus:outline-none focus:border-softgray transition-colors">
-                </div>
-                <div>
-                    <label class="block text-xs uppercase text-secondary mb-1 tracking-wider">Last Name</label>
-                    <input type="text" name="last_name"
-                        class="w-full bg-charcoal border border-darkgray text-primary p-3 rounded focus:outline-none focus:border-softgray transition-colors">
-                </div>
+    <!-- Header & Navigation -->
+    <div class="border-b border-darkgray pb-4 mb-8 flex justify-between items-end">
+        <div>
+            <div class="flex items-center gap-2 text-sm text-secondary mb-2">
+                <a href="{{ url_for('lead.index') }}" class="hover:text-primary transition-colors">Pipeline</a>
+                <span class="text-darkgray">/</span>
+                <span class="text-softgray">New Prospect</span>
             </div>
-
-            <!-- Row 2: Contact -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-xs uppercase text-secondary mb-1 tracking-wider">Email</label>
-                    <input type="email" name="email_primary"
-                        class="w-full bg-charcoal border border-darkgray text-primary p-3 rounded focus:outline-none focus:border-softgray transition-colors">
-                </div>
-                <div>
-                    <label class="block text-xs uppercase text-secondary mb-1 tracking-wider">Phone</label>
-                    <input type="text" name="phone_primary"
-                        class="w-full bg-charcoal border border-darkgray text-primary p-3 rounded focus:outline-none focus:border-softgray transition-colors">
-                </div>
-            </div>
-
-            <!-- Row 3: Status & Source Dropdowns -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-xs uppercase text-secondary mb-1 tracking-wider">Status</label>
-                    <select name="status" class="w-full bg-charcoal border border-darkgray text-primary p-3 rounded focus:outline-none focus:border-softgray">
-                        <option value="New">New</option>
-                        <option value="Contacted">Contacted</option>
-                        <option value="Qualified">Qualified</option>
-                        <option value="Lost">Lost</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-xs uppercase text-secondary mb-1 tracking-wider">Source</label>
-                    <select name="lead_source" class="w-full bg-charcoal border border-darkgray text-primary p-3 rounded focus:outline-none focus:border-softgray">
-                        <option value="Website">Website</option>
-                        <option value="Referral">Referral</option>
-                        <option value="Cold Call">Cold Call</option>
-                        <option value="Campaign">Campaign</option>
-                    </select>
-                </div>
-            </div>
-
-            <!-- Row 4: Assigned User -->
-            <div>
-                <label class="block text-xs uppercase text-secondary mb-1 tracking-wider">Assigned To</label>
-                <select name="assigned_user_id" 
-                    class="w-full bg-charcoal border border-darkgray text-primary p-3 rounded focus:outline-none focus:border-softgray transition-colors">
-                    <option value="">-- Select User --</option>
-                    {% for user in users %}
-                        <option value="{{ user.id }}">{{ user.username }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-
-            <div class="flex gap-3 mt-4 pt-4 border-t border-darkgray">
-                <button type="submit" 
-                    class="flex-1 bg-softgray text-charcoal font-bold py-3 rounded hover:bg-primary transition-colors">
-                    Save Lead
-                </button>
-                <a href="{{ url_for('lead.index') }}" 
-                   class="px-6 py-3 border border-darkgray text-secondary rounded hover:text-primary hover:border-softgray transition-colors">
-                   Cancel
-                </a>
-            </div>
-        </form>
+            <h1 class="text-3xl font-bold text-primary tracking-tight">Capture New Lead</h1>
+        </div>
     </div>
+
+    <!-- MAIN FORM -->
+    <form action="{{ url_for('lead.add_lead') }}" autocomplete="off" method="POST">
+        
+        <div class="bg-[#1E1E1E] border border-darkgray rounded-lg shadow-xl max-w-6xl mx-auto overflow-hidden">
+            
+            <!-- SECTION 1: IDENTITY & CONTACT -->
+            <div class="p-8 border-b border-darkgray">
+                <h2 class="text-xs font-bold uppercase tracking-widest text-softgray mb-6">1. Identity & Contact</h2>
+                
+                <!-- Name Row -->
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-4 mb-6">
+                    <div class="md:col-span-2">
+                        <label class="block text-xs text-secondary mb-1">Salutation</label>
+                        <select name="salutation" class="form-input">
+                            <option value="Mr.">Mr.</option>
+                            <option value="Ms.">Ms.</option>
+                            <option value="Mrs.">Mrs.</option>
+                            <option value="Dr.">Dr.</option>
+                            <option value="Prof.">Prof.</option>
+                        </select>
+                    </div>
+                    <div class="md:col-span-5">
+                        <label class="block text-xs text-secondary mb-1">First Name *</label>
+                        <input type="text" name="first_name" required class="form-input" placeholder="e.g. Rahul">
+                    </div>
+                    <div class="md:col-span-5">
+                        <label class="block text-xs text-secondary mb-1">Last Name *</label>
+                        <input type="text" name="last_name" required class="form-input" placeholder="e.g. Verma">
+                    </div>
+                </div>
+
+                <!-- Contact Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                        <label class="block text-xs text-secondary mb-1">Primary Email</label>
+                        <input type="email" name="email_primary" class="form-input" placeholder="rahul@company.com">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-secondary mb-1">Primary Phone</label>
+                        <input type="text" name="phone_primary" class="form-input" placeholder="+91 98765 43210">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-secondary mb-1">Website</label>
+                        <input type="text" name="website" class="form-input" placeholder="https://...">
+                    </div>
+                    
+                    <!-- JSON Fields (Hidden by default logic, simplified for UI) -->
+                    <div class="md:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-[10px] text-darkgray mb-1">Other Emails (JSON)</label>
+                            <textarea name="email_json" rows="1" class="form-textarea font-mono text-xs" placeholder='{"personal": "..."}'></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] text-darkgray mb-1">Other Phones (JSON)</label>
+                            <textarea name="phone_json" rows="1" class="form-textarea font-mono text-xs" placeholder='{"office": "..."}'></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 2: PROFESSIONAL PROFILE -->
+            <div class="p-8 border-b border-darkgray bg-[#1a1a1a]">
+                <h2 class="text-xs font-bold uppercase tracking-widest text-softgray mb-6">2. Professional Profile</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    
+                    <div>
+                        <label class="block text-xs text-secondary mb-1">Target Account Name</label>
+                        <input type="text" name="account_id_name" class="form-input" placeholder="Company they work for">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs text-secondary mb-1">Designation</label>
+                        <input type="text" name="designation" class="form-input" placeholder="e.g. Procurement Manager">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs text-secondary mb-1">Department</label>
+                        <input type="text" name="department" class="form-input" placeholder="e.g. IT / Operations">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs text-secondary mb-1">Hierarchy Level</label>
+                        <input type="text" name="hierarchy" class="form-input" placeholder="e.g. C-Level, VP, Manager">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs text-secondary mb-1">Industry</label>
+                        <input type="text" name="industry" class="form-input" placeholder="e.g. Manufacturing">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs text-secondary mb-1">Customer Type</label>
+                        <input type="text" name="customer_type" class="form-input" placeholder="e.g. Enterprise">
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 3: PIPELINE & STATUS -->
+            <div class="p-8 border-b border-darkgray">
+                <h2 class="text-xs font-bold uppercase tracking-widest text-softgray mb-6">3. Pipeline Status</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+                    <div>
+                        <label class="block text-xs text-secondary mb-1">Status</label>
+                        <select name="status" class="form-input">
+                            <option value="New">New</option>
+                            <option value="Contacted">Contacted</option>
+                            <option value="Qualified">Qualified</option>
+                            <option value="Negotiation">Negotiation</option>
+                            <option value="Lost">Lost</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs text-secondary mb-1">Lead Source</label>
+                        <input type="text" name="lead_source" class="form-input" placeholder="e.g. LinkedIn">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-secondary mb-1">Other Source</label>
+                        <input type="text" name="other_source" class="form-input" placeholder="Specifics">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-secondary mb-1">Product Interest</label>
+                        <input type="text" name="product_sub_category" class="form-input" placeholder="e.g. ERP License">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 border-t border-darkgray pt-6">
+                    <div>
+                        <label class="block text-xs text-secondary mb-1">Next Follow-up Date</label>
+                        <input type="datetime-local" name="next_followup_date" class="form-input">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-secondary mb-1">Follow-up Type</label>
+                        <select name="next_followup_type" class="form-input">
+                            <option value="">-- Select --</option>
+                            <option value="Call">Call</option>
+                            <option value="Email">Email</option>
+                            <option value="Meeting">Meeting</option>
+                            <option value="Demo">Demo</option>
+                        </select>
+                    </div>
+                    <div class="flex items-center h-full pt-4">
+                        <label class="flex items-center gap-3 cursor-pointer">
+                            <input type="checkbox" name="converted" value="true" class="w-5 h-5 bg-charcoal border-darkgray rounded accent-primary">
+                            <span class="text-sm text-green-400 font-bold">Mark as Converted</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 4: LOCATION & GEOFENCE -->
+            <div class="p-8 border-b border-darkgray bg-[#1a1a1a]">
+                <h2 class="text-xs font-bold uppercase tracking-widest text-softgray mb-6">4. Location Data</h2>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div class="col-span-2">
+                        <label class="block text-xs text-secondary mb-1">Street</label>
+                        <input type="text" name="street" class="form-input">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-secondary mb-1">Area</label>
+                        <input type="text" name="area" class="form-input">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-secondary mb-1">City</label>
+                        <input type="text" name="city" class="form-input">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-secondary mb-1">State</label>
+                        <input type="text" name="state" class="form-input">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-secondary mb-1">Country</label>
+                        <input type="text" name="country" class="form-input">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-secondary mb-1">Postal Code</label>
+                        <input type="text" name="postal_code" class="form-input">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-secondary mb-1">Address Type</label>
+                        <input type="text" name="address_type" class="form-input" placeholder="Office/Home">
+                    </div>
+                </div>
+
+                <div class="mt-6 p-4 border border-darkgray rounded bg-[#121212]">
+                    <h3 class="text-[10px] font-bold uppercase text-softgray mb-3">Geofencing</h3>
+                    <div class="grid grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-[10px] text-darkgray mb-1">Latitude</label>
+                            <input type="text" name="geofence_latitude" class="form-input-sm" placeholder="00.0000">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] text-darkgray mb-1">Longitude</label>
+                            <input type="text" name="geofence_longitude" class="form-input-sm" placeholder="00.0000">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] text-darkgray mb-1">Radius (Meters)</label>
+                            <input type="text" name="geofence_radius" class="form-input-sm" placeholder="e.g. 500m">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 5: SYSTEM & TRACKING -->
+            <div class="p-8 border-b border-darkgray">
+                <h2 class="text-xs font-bold uppercase tracking-widest text-softgray mb-6">5. System & Assignment</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <label class="block text-xs text-secondary mb-1">Assigned Owner</label>
+                        <select name="assigned_user_id" class="form-input">
+                            <option value="">-- Unassigned --</option>
+                            {% for user in users %}
+                                <option value="{{ user.id }}">{{ user.username }} ({{ user.email }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs text-secondary mb-1">Internal Team ID</label>
+                        <input type="text" name="team_id" class="form-input">
+                    </div>
+                </div>
+
+                <!-- Advanced Tracking (Collapsed style) -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 opacity-60 hover:opacity-100 transition-opacity">
+                    <div>
+                        <label class="block text-[10px] text-secondary mb-1">How Old (Days)</label>
+                        <input type="number" name="how_old_days" class="form-input-sm" value="0">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] text-secondary mb-1">Untouched (Days)</label>
+                        <input type="number" name="untouched_since_days" class="form-input-sm" value="0">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] text-secondary mb-1">Lost Reason</label>
+                        <input type="text" name="lost_reason" class="form-input-sm">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] text-secondary mb-1">Closed Date</label>
+                        <input type="date" name="closed_date" class="form-input-sm">
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 6: NOTES -->
+            <div class="p-8 bg-[#1a1a1a]">
+                <h2 class="text-xs font-bold uppercase tracking-widest text-softgray mb-6">6. Remarks</h2>
+                <div class="grid grid-cols-1 gap-6">
+                    <div>
+                        <label class="block text-xs text-secondary mb-1">Description / Requirements</label>
+                        <textarea name="description" rows="3" class="form-textarea"></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-xs text-secondary mb-1">Latest Comment</label>
+                        <textarea name="latest_comment" rows="3" class="form-textarea"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FOOTER -->
+            <div class="p-8 border-t border-darkgray flex justify-end gap-4 bg-charcoal">
+                <a href="{{ url_for('lead.index') }}" class="px-6 py-3 border border-darkgray text-secondary rounded hover:text-primary transition-colors">Cancel</a>
+                <button type="submit" class="bg-primary text-charcoal font-bold px-8 py-3 rounded hover:bg-white transition-all shadow-lg">
+                    Save Prospect
+                </button>
+            </div>
+
+        </div>
+    </form>
+
+    <!-- STYLES -->
+    <style>
+        .form-input {
+            width: 100%;
+            background-color: #121212;
+            border: 1px solid #444444;
+            color: #E0E0E0;
+            padding: 0.75rem;
+            border-radius: 0.25rem;
+            transition: all 0.2s;
+        }
+        .form-input:focus { outline: none; border-color: #888888; }
+        
+        .form-input-sm {
+            width: 100%;
+            background-color: #121212;
+            border: 1px solid #333333;
+            color: #B0B0B0;
+            padding: 0.4rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+        }
+        .form-input-sm:focus { outline: none; border-color: #666666; }
+
+        .form-textarea {
+            width: 100%;
+            background-color: #121212;
+            border: 1px solid #444444;
+            color: #E0E0E0;
+            padding: 0.75rem;
+            border-radius: 0.25rem;
+        }
+        .form-textarea:focus { outline: none; border-color: #888888; }
+    </style>
 
 {% endblock %}

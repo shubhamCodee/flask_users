@@ -3,7 +3,6 @@ from repositories.AccountRepository import AccountRepository
 class AccountService:
     @staticmethod
     def create_account(data):
-        # In the future, we can add AI Training logic here
         return AccountRepository.add_account(data)
 
     @staticmethod
