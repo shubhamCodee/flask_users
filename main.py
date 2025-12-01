@@ -9,9 +9,7 @@ from controllers.AccountController import account_bp
 from controllers.LeadController import lead_bp
 from controllers.OpportunityController import opportunity_bp
 from controllers.AIController import ai_bp
-from services.AIService import AIService
-from services.UserService import UserService
-
+from controllers.WebhookController import webhook_bp
 
 def create_app():
     app = Flask(__name__)
@@ -31,6 +29,8 @@ def create_app():
     app.register_blueprint(opportunity_bp, url_prefix='/opportunities')
 
     app.register_blueprint(ai_bp, url_prefix='/ai')
+
+    app.register_blueprint(webhook_bp)
 
     @app.route('/')
     def home():
